@@ -1,8 +1,20 @@
 # Introduction
 
-This project will contain the SW of the Ratibroombroom micromouse
+This project will contain the SW of the Ratibroombroom micromouse.
 
 This is an open source project. That means you can build your own if you want. You can find the HW specification of this micromouse in this link (https://github.com/aindustriosa/Ratibroombroom)
+
+# Setting up the project
+
+To install the dependencies and configure the project execute the following command
+
+```
+bash script/setup_project.sh
+```
+
+# Compilation
+
+TODO
 
 # References
 
