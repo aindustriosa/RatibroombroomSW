@@ -6,6 +6,10 @@ This is an open source project. That means you can build your own if you want. Y
 
 # Setting up the project
 
+Required dependencies:
+
+* openocd (you can install it with apt install openocd in Ubuntu)
+
 To install the dependencies and configure the project execute the following command
 
 ```
@@ -14,7 +18,21 @@ bash script/setup_project.sh
 
 # Compilation
 
-TODO
+* compile from scratch
+
+Type this command in the *src* folder
+
+```
+make
+```
+
+# Programming the micromouse
+
+Use the following script
+
+```
+bash scripts/program_ratibroom.sh
+```
 
 # References
 
