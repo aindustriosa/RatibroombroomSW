@@ -1,6 +1,6 @@
 # Introduction
 
-This project will contain the SW of the Ratibroombroom micromouse.
+This project will contain the SW of the Ratibroombroom micromouse. The micromouse is based in the *STM32F405RGT6* microcontroller.
 
 This is an open source project. That means you can build your own if you want. You can find the HW specification of this micromouse in this link (https://github.com/aindustriosa/Ratibroombroom)
 
@@ -23,12 +23,13 @@ bash script/setup_project.sh
 Type this command in the *src* folder
 
 ```
+make clean
 make
 ```
 
 # Programming the micromouse
 
-Use the following script
+Use the following script that uses *openocd*
 
 ```
 bash scripts/program_ratibroom.sh
