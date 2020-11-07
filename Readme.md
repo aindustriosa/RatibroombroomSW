@@ -22,5 +22,5 @@ This project uses a fork of the mmlib library from Bulebots (Original project he
 
 This project is also inspired by the following projects:
 
-* Bule bule micromouse: https://bulebule.readthedocs.io/en/latest/ from Bulebots and its continuation, Meiga (https://github.com/Bulebots/meiga)
+* Bule bule micromouse: https://bulebule.readthedocs.io/en/latest/ from Bulebots and its continuation, Meiga (https://github.com/Bulebots/meiga). 
 
