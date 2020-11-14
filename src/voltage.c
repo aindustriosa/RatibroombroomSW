@@ -28,4 +28,5 @@ float get_battery_voltage(void)
 float get_motor_driver_input_voltage(void)
 {
   // FIXME: mock
+  return 0.0;
 }
