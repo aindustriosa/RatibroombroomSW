@@ -1,14 +1,15 @@
 OBJS = $(filter-out main.o,$(patsubst %.c,%.o,$(wildcard *.c)))
 OBJS += $(patsubst printf/%.c,printf/%.o,$(wildcard printf/*.c))
+OBJS += $(patsubst hal/%.c,hal/%.o,$(wildcard hal/*.c))
 OBJS += $(patsubst mmlib/%.c,mmlib/%.o,$(wildcard mmlib/*.c))
 
 BINARY = main
 
 OPENCM3_DIR	= ../.opencm3/libopencm3
-LDSCRIPT	= stm32f405xg.ld
+LDSCRIPT	= ./hal/stm32f405xg.ld
 LDLIBS		+= -lm
 LDFLAGS		+= -L./
-DEFS		+= -I./
+DEFS		+= -I./hal/ -I./
 
 # Target configuration
 LIBNAME		= opencm3_stm32f4
