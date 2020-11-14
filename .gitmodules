@@ -1,0 +1,9 @@
+[submodule ".opencm3/libopencm3"]
+	path = .opencm3/libopencm3
+	url = https://github.com/libopencm3/libopencm3
+[submodule "src/printf"]
+	path = src/printf
+	url = https://github.com/mpaland/printf
+[submodule "src/mmlib"]
+	path = src/mmlib
+	url = https://github.com/Bulebots/mmlib.git
