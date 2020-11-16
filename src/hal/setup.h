@@ -84,9 +84,6 @@
 #define ADC_RESOLUTION 4096
 #define ADC_LSB (3.3 / ADC_RESOLUTION)
 
-/** Voltage divider */
-#define VOLT_DIV_FACTOR ((47. + 10.) / 10.)   // FIXME: meiga specs, update to  rativroom
-
 /**
  * Flash module organization.
  *
