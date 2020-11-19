@@ -25,6 +25,11 @@
  * The value is converted from bits to voltage taking into account that the
  * battery voltage is read through a voltage divider.
  * 
+ * Note the use of adc_start_conversion_regular instead of injected (direct is not 
+ * available for STMF4, only STMF1)
+ * https://electronics.stackexchange.com/questions/83426/what-is-the-difference-between-an-injected-and-regular-stm32-adc-channel
+ * http://libopencm3.org/docs/latest/stm32f1/html/group__adc__file.html#ga455f91c3461744ff38517f4cd54c31b4
+ * 
  * TODO: This function is mainly used to check the battery status, so we can change it if depletted.
  *       It would be interesting to avoid noise in measurements or getting a value when the motors are
  *       using a peak of current by returning a mean value of past samples. Like in 
@@ -36,7 +41,7 @@ float get_battery_voltage(void)
 {
 	uint16_t battery_bits;
 
-	adc_start_conversion_direct(BATTERY_ADC);
+	adc_start_conversion_regular(BATTERY_ADC);
 	while (!adc_eoc(BATTERY_ADC))
 		;
 	battery_bits = adc_read_regular(BATTERY_ADC);
