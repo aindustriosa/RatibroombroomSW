@@ -1,0 +1,44 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "Build Ratibroom firmware",
+            "type": "shell",
+            "command": "make",
+            "args": ["-C", "src/"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make",
+            "args": ["-C", "src/", "clean"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build libopencm3",
+            "type": "shell",
+            "command": "scripts/setup_project.sh",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            "problemMatcher": "$msCompile"
+        }
+	]
+}
