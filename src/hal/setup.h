@@ -87,18 +87,16 @@
 /**
  * Flash module organization.
  *
- * The memory organization is based on a main memory block containing 64 pages
- * of 1 Kbyte (for medium-density devices), and an information block.
+ * The memory organization is:
+ * 4 sectors of 16KB
+ * 1 sector of 64KB
+ * 7 sectors of 128 KB 
  *
- * The linker file was modified to reserve the last memory page for EEPROM.
- * FLASH_EEPROM_ADDRESS = FLASH_BASE + FLASH_EEPROM_PAGE_NUM * FLASH_PAGE_SIZE
- * FLASH_BASE = 0x08000000
- * FLASH_EEPROM_PAGE_NUM = 63
- * FLASH_PAGE_SIZE = 0x400 (1 Kbyte)
+ * The linker file was modified to reserve the first memory page for EEPROM.
  *
- * @see Programming manual (PM0075) "Flash module organization"
+ * @see Programming manual (PM0081) "Flash module organization"
  */
-#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x0800fc00))  // FIXME: bulebule specs
+#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x08000000))
 
 void setup(void);
 void setup_spi_low_speed(void);   // Used by mmlib (mpu)
