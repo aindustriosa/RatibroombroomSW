@@ -100,7 +100,7 @@
  */
 #define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x0800fc00))  // FIXME: bulebule specs
 
-
+void setup(void);
 void setup_spi_low_speed(void);   // Used by mmlib (mpu)
 void setup_spi_high_speed(void);  // Used by mmlib (mpu)
 
