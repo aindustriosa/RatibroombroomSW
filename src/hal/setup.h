@@ -51,8 +51,14 @@
 #define SYSTICK_FREQUENCY_HZ 1000
 #define DRIVER_PWM_PERIOD 1024
 
-/** Tolerance when trying to keep a defined distance from the front wall */
-#define KEEP_FRONT_DISTANCE_TOLERANCE 0.001   //FIXME: bulebule specs
+/**
+ * Maximum PWM period (should be <= DRIVER_PWM_PERIOD).
+ *
+ * Usually it should be set to DRIVER_PWM_PERIOD except for testing purposes
+ * in order to protect the locomotion system and avoid reaching uncontrolled
+ * speeds.
+ */
+#define MAX_PWM_PERIOD 1024
 
 
 /**
@@ -62,33 +68,37 @@
  * collision occurs, the robot motor control stops working and the motor driver
  * is disabled.
  */
-#define MAX_MOTOR_DRIVER_SATURATION_PERIOD 0.01
+#define MAX_MOTOR_DRIVER_SATURATION_PERIOD 0.01 // Used by mmlib (control)
+// FIXME: this definition is from MEIGA
 
+
+/** Tolerance when trying to keep a defined distance from the front wall */
+#define KEEP_FRONT_DISTANCE_TOLERANCE 0.001   //FIXME: bulebule specs
 
 /**
  * Maximum number of movements in a smoothed path.
  */
 #define MAX_SMOOTH_PATH_LEN (MAZE_AREA + 3)
 
-
+/** ADC constants */
+#define ADC_RESOLUTION 4096
+#define ADC_LSB (3.3 / ADC_RESOLUTION)
 
 /**
  * Flash module organization.
  *
- * The memory organization is based on a main memory block containing 64 pages
- * of 1 Kbyte (for medium-density devices), and an information block.
+ * The memory organization is:
+ * 4 sectors of 16KB
+ * 1 sector of 64KB
+ * 7 sectors of 128 KB 
  *
- * The linker file was modified to reserve the last memory page for EEPROM.
- * FLASH_EEPROM_ADDRESS = FLASH_BASE + FLASH_EEPROM_PAGE_NUM * FLASH_PAGE_SIZE
- * FLASH_BASE = 0x08000000
- * FLASH_EEPROM_PAGE_NUM = 63
- * FLASH_PAGE_SIZE = 0x400 (1 Kbyte)
+ * The linker file was modified to reserve the first memory page for EEPROM.
  *
- * @see Programming manual (PM0075) "Flash module organization"
+ * @see Programming manual (PM0081) "Flash module organization"
  */
-#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x0800fc00))  // FIXME: bulebule specs
+#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x08000000))
 
-
+void setup(void);
 void setup_spi_low_speed(void);   // Used by mmlib (mpu)
 void setup_spi_high_speed(void);  // Used by mmlib (mpu)
 
