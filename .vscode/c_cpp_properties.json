@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "gcc",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/.opencm3/libopencm3/include"
+            ],
+            "defines": [
+                "STM32F4"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
