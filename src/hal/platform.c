@@ -1,6 +1,8 @@
 #include "platform.h"
 
 
+#define MPU_READ 0x80
+
 
 /**
  * @brief Read the microcontroller clock cycle counter.
@@ -10,8 +12,7 @@
 uint32_t read_cycle_counter(void)
 {
 
-  // FIXME: mock
-  return 0;
+  return dwt_read_cycle_counter();
 }
 
 
@@ -20,9 +21,7 @@ uint32_t read_cycle_counter(void)
  */
 uint16_t read_encoder_left(void)
 {
-  // FIXME mock
-  return 0;
-
+  return (uint16_t)timer_get_counter(TIM3);
 }
 
 /**
@@ -30,8 +29,7 @@ uint16_t read_encoder_left(void)
  */
 uint16_t read_encoder_right(void)
 {
-  // FIXME mock
-  return 0;
+  return (uint16_t)timer_get_counter(TIM4);
 }
 
 /**
@@ -41,8 +39,16 @@ uint16_t read_encoder_right(void)
  */
 uint8_t mpu_read_register(uint8_t address)
 {
-  // FIXME mock
-  return 0;
+  uint8_t reading;
+  
+  gpio_clear(GPIOA, GPIO15);
+  spi_send(SPI3, (MPU_READ | address));
+  spi_read(SPI3);
+  spi_send(SPI3, 0x00);
+  reading = spi_read(SPI3);
+  gpio_set(GPIOA, GPIO15);
+
+  return reading;
 }
 
 
@@ -54,6 +60,10 @@ uint8_t mpu_read_register(uint8_t address)
  */
 void mpu_write_register(uint8_t address, uint8_t value)
 {
-  // FIXME mock
-
+  gpio_clear(GPIOA, GPIO15);
+  spi_send(SPI3, address);
+  spi_read(SPI3);
+  spi_send(SPI3, value);
+  spi_read(SPI3);
+  gpio_set(GPIOA, GPIO15);
 }
