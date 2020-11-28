@@ -4,36 +4,8 @@ This project will contain the SW of the Ratibroombroom micromouse. The micromous
 
 This is an open source project. That means you can build your own if you want. You can find the HW specification of this micromouse in this link (https://github.com/aindustriosa/Ratibroombroom)
 
-# Setting up the project
-
-Required dependencies:
-
-* openocd (you can install it with apt install openocd in Ubuntu)
-
-To install the dependencies and configure the project execute the following command
-
-```
-bash script/setup_project.sh
-```
-
-# Compilation
-
-* compile from scratch
-
-Type this command in the *src* folder
-
-```
-make clean
-make
-```
-
-# Programming the micromouse
-
-Use the following script that uses *openocd*
-
-```
-bash scripts/program_ratibroom.sh
-```
+# Developing
+Please read [development](docs/developing.md)
 
 # References
 

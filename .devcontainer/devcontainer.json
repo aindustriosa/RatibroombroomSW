@@ -1,0 +1,21 @@
+{
+	"name": "Mighty SDK",
+
+	"context": "..",
+
+	"image": "pcounhago/mighty-sdk:9.2020q2",
+	"remoteUser": "mightyteam",
+	"updateRemoteUserUID": false,
+
+	"settings": { 
+		"terminal.integrated.shell.linux": null
+	},
+
+	"extensions": [ 
+		"ms-vscode.cpptools"
+	],
+
+	"runArgs": ["--name", "mighty-sdk"],
+
+	// "forwardPorts": [],
+}
