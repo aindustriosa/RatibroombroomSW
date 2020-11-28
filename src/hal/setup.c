@@ -102,6 +102,7 @@ static void setup_clock(void)
 	rcc_periph_clock_enable(RCC_TIM11);
 
 	/* ADC */
+	rcc_periph_clock_enable(RCC_ADC1);
 	rcc_periph_clock_enable(RCC_ADC2);
 
 	/* DMA */
@@ -149,6 +150,51 @@ static void setup_systick(void)
 }
 
 
+
+/**
+ * @brief Setup for ADC 1: Four injected channels on scan mode.
+ *
+ * - Initialize channel_sequence structure to map physical channels
+ *   versus software injected channels. The order to read the sensors is: left
+ *   side, right side, left front, right front.
+ * - Power off the ADC to be sure that does not run during configuration.
+ * - Enable scan mode with single conversion mode triggered by software.
+ * - Configure the alignment (right) and the sample time (13.5 cycles of ADC
+ *   clock).
+ * - Set injected sequence with `channel_sequence` structure.
+ * - Start the ADC.
+ *
+ * @note This ADC reads phototransistor sensors measurements.
+ *
+ * @see Reference manual (RM0090) "Analog-to-digital converter" and in
+ * particular "Scan mode" section.
+ *
+ * @see Pinout section from project official documentation
+ * (https://bulebule.readthedocs.io/)
+ */
+static void setup_adc1(void)
+{
+	uint8_t channel_sequence[4] = {ADC_CHANNEL12, ADC_CHANNEL11, ADC_CHANNEL13,
+				       ADC_CHANNEL10};
+
+	adc_power_off(ADC1);
+	adc_enable_scan_mode(ADC1);
+	adc_set_single_conversion_mode(ADC1);
+
+	// adc_enable_external_trigger_injected(ADC1, ADC_CR2_JEXTSEL_JSWSTART); //FIXME: remove
+	// adc_start_conversion_injected()  // fixme: start conversion with this
+	
+	adc_set_right_aligned(ADC1);
+	adc_set_sample_time_on_all_channels(ADC1, ADC_SMPR_SMP_15CYC);
+	adc_set_injected_sequence(
+	    ADC1, sizeof(channel_sequence) / sizeof(channel_sequence[0]),
+	    channel_sequence);
+	adc_power_on(ADC1);
+}
+
+
+
+
 /**
  * @brief Setup for ADC2: configured for regular conversion.
  *
@@ -189,6 +235,10 @@ static void setup_adc2(void)
  */
 static void setup_gpio(void)
 {
+        /* Infrarred sensors */
+        gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE,
+			GPIO0 | GPIO1 | GPIO2 | GPIO3);
+  
 	/* Battery */
 	gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO4);
 
@@ -429,8 +479,12 @@ void setup(void)
 	setup_motor_driver();
 	setup_encoders();
 	setup_usart();
+	setup_adc1();
 	setup_adc2();
 	setup_mpu();
 	setup_systick();
+	// setup_emitters TODO
+	// TODO: adding nvic of timer1
+	// TODO: add detection (missing functions)
 }
 
