@@ -1,0 +1,22 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master, feat*/*, chore*/*, develop ]
+    paths-ignore:
+    - 'docs/**'
+  pull_request:
+    branches: [ master ]
+    
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile libopencm3
+      run: make libopencm3
+    - name: make
+      run: make clean ; make
