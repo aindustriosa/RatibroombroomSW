@@ -1,3 +1,5 @@
+![C/C++ CI](https://github.com/aindustriosa/RatibroombroomSW/workflows/C/C++%20CI/badge.svg?branch=master)
+
 # Introduction
 
 This project will contain the SW of the Ratibroombroom micromouse. The micromouse is based in the *STM32F405RGT6* microcontroller.
