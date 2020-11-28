@@ -13,8 +13,13 @@
  */
 void speaker_on(float hz)
 {
-  // FIXME: mock
+  uint16_t period;
 
+  period = (uint16_t)(SPEAKER_BASE_FREQUENCY_HZ / hz);
+  timer_set_period(TIM11, period);
+  timer_set_oc_value(TIM11, TIM_OC1, period / 2);
+  timer_enable_counter(TIM11);
+  timer_enable_oc_output(TIM11, TIM_OC1);
 }
 
 
@@ -26,7 +31,7 @@ void speaker_on(float hz)
  */
 void speaker_off(void)
 {
-  // FIXME: mock
-
+  timer_disable_counter(TIM11);
+  timer_disable_oc_output(TIM11, TIM_OC1);
 }
   
