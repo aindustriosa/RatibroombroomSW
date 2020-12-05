@@ -96,7 +96,7 @@ static void setup_clock(void)
 	rcc_periph_clock_enable(RCC_SPI3);
 
 	/* Timers */
-	rcc_periph_clock_enable(RCC_TIM1); // emitter readings/interruption
+	rcc_periph_clock_enable(RCC_TIM10); // emitter readings/interruption
 	rcc_periph_clock_enable(RCC_TIM3); // encoder
 	rcc_periph_clock_enable(RCC_TIM4); // encoder
 	rcc_periph_clock_enable(RCC_TIM8); // motor driver
@@ -128,11 +128,15 @@ static void setup_clock(void)
  */
 static void setup_exceptions(void)
 {
+
+  nvic_set_priority(NVIC_TIM1_UP_TIM10_IRQ, 0);
   nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2);
   
   nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
   nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
   nvic_enable_irq(NVIC_USART1_IRQ);
+  nvic_enable_irq(NVIC_TIM1_UP_TIM10_IRQ);
+
 }
 
 
@@ -186,8 +190,7 @@ static void setup_adc1(void)
 	adc_set_single_conversion_mode(ADC1);
 
 	// adc_enable_external_trigger_injected(ADC1, ADC_CR2_JEXTSEL_JSWSTART); //FIXME: remove
-	// adc_start_conversion_injected()  // fixme: start conversion with this
-	
+	// adc_start_conversion_injected(ADC1);  // fixme: start conversion with this
 	adc_set_right_aligned(ADC1);
 	adc_set_sample_time_on_all_channels(ADC1, ADC_SMPR_SMP_15CYC);
 	adc_set_injected_sequence(
@@ -472,6 +475,47 @@ static void setup_speaker(void)
 
 
 /**
+ * @brief TIM1 setup.
+ *
+ * The TIM1 generates an update event interruption that invokes the
+ * function tim1_up_isr.
+ *
+ * - Set TIM1 default values.
+ * - Configure the base time (no clock division ratio, no aligned mode,
+ *   direction up).
+ * - Set clock division, prescaler and period parameters to get an update
+ *   event with a frequency of 16 KHz. 16 interruptions by ms, 4 sensors with
+ *   4 states.
+ *
+ *   \f$frequency = \frac{timerclock}{(preescaler + 1)(period + 1)}\f$
+ *
+ * - Enable the TIM9
+ * - Enable the interruption of type update event on the TIM1.
+ *
+ * @note The TIM1 is conected to the APB2 prescaler.
+ *
+ * @see Reference manual (RM0008) "Advanced-control timers"
+ */
+static void setup_emitters(void)
+{
+  rcc_periph_reset_pulse(RST_TIM9);
+
+  timer_set_mode(TIM10, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
+		 TIM_CR1_DIR_UP);
+  
+  timer_set_clock_division(TIM10, 0x00);
+  timer_set_prescaler(TIM10, (rcc_apb2_frequency / 160000 - 1));
+  timer_set_period(TIM10, 10 - 1);
+  timer_enable_counter(TIM10);
+  // Update interrupt enable
+  timer_enable_irq(TIM10, TIM_DIER_UIE);
+
+
+}
+
+
+
+/**
  * @brief Execute all setup functions.
  */
 void setup(void)
@@ -483,6 +527,7 @@ void setup(void)
 	setup_motor_driver();
 	setup_encoders();
 	setup_usart();
+	setup_emitters();
 	setup_adc1();
 	setup_adc2();
 	setup_mpu();
