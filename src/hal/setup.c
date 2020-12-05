@@ -96,10 +96,11 @@ static void setup_clock(void)
 	rcc_periph_clock_enable(RCC_SPI3);
 
 	/* Timers */
-	rcc_periph_clock_enable(RCC_TIM3);
-	rcc_periph_clock_enable(RCC_TIM4);
-	rcc_periph_clock_enable(RCC_TIM8);
-	rcc_periph_clock_enable(RCC_TIM11);
+	rcc_periph_clock_enable(RCC_TIM1); // emitter readings/interruption
+	rcc_periph_clock_enable(RCC_TIM3); // encoder
+	rcc_periph_clock_enable(RCC_TIM4); // encoder
+	rcc_periph_clock_enable(RCC_TIM8); // motor driver
+	rcc_periph_clock_enable(RCC_TIM11); //speaker
 
 	/* ADC */
 	rcc_periph_clock_enable(RCC_ADC1);
