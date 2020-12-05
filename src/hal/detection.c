@@ -130,6 +130,17 @@ const float log_conversion[LOG_CONVERSION_TABLE_SIZE] = {
     8.3109, 8.3119, 8.3129, 8.3139, 8.3148, 8.3158, 8.3168};
 
 
+/**
+ * @brief TIM10 Global interruption routine.
+ *
+ * - Manage the update event interruption flag.
+ * - Trigger state machine to manage sensors.
+ */
+
+void tim1_up_tim10_isr() {
+  // TODO
+}
+
 
 /**
  * @brief Get sensors values with emitter on and off.
