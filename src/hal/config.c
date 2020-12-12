@@ -1,5 +1,7 @@
 #include "config.h"
 
+static volatile float linear_speed_limit = LINEAR_SPEED_LIMIT;
+static volatile float micrometers_per_count = MICROMETERS_PER_COUNT;
 static volatile struct control_constants control = {
     .kp_linear = KP_LINEAR,
     .kd_linear = KD_LINEAR,
@@ -15,7 +17,7 @@ static volatile struct control_constants control = {
 
 void set_micrometers_per_count(float value)
 {
-  // FIXME: mock
+  micrometers_per_count = value;
 }
 
 struct control_constants get_control_constants(void)
@@ -26,25 +28,22 @@ struct control_constants get_control_constants(void)
 
 void set_control_constants(struct control_constants value)
 {
-  // FIXME: mock
+  control = value;
 }
 
 void set_linear_speed_limit(float value)
 {
-  // FIXME: mock
+  linear_speed_limit = value;
 }
 
 
 float get_micrometers_per_count(void)
 {
-  // FIXME: mock
-
-  return 0.0;
+  return micrometers_per_count;
 }
 
 
 float get_linear_speed_limit(void)
 {
-  // FIXME: mock
-  return 0.0;
+  return linear_speed_limit;
 }

@@ -3,6 +3,7 @@
 
 
 /** Locomotion-related constants */
+#define MICROMETERS_PER_COUNT 8.32        // FIXME: bulebule specs
 #define SHIFT_AFTER_180_DEG_TURN 0.010    // FIXME: bulebule specs
 
 
@@ -33,6 +34,9 @@
 #define KP_ANGULAR_DIAGONAL 2.  // FIXME: bulebule specs
 #define KI_ANGULAR_DIAGONAL 4.  // FIXME: bulebule specs
 
+
+/** Speed constants */
+#define LINEAR_SPEED_LIMIT 2.	// FIXME: bulebule specs
 
 struct control_constants {
 	float kp_linear;
