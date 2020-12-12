@@ -131,6 +131,106 @@ const float log_conversion[LOG_CONVERSION_TABLE_SIZE] = {
 
 
 /**
+ * @brief Set an specific emitter ON.
+ *
+ * @param[in] emitter Emitter type.
+ */
+static void set_emitter_on(uint8_t emitter)
+{
+	switch (emitter) {
+	case SENSOR_SIDE_LEFT_ID:
+		gpio_set(GPIOA, GPIO6);
+		break;
+	case SENSOR_SIDE_RIGHT_ID:
+		gpio_set(GPIOA, GPIO5);
+		break;
+	case SENSOR_FRONT_LEFT_ID:
+		gpio_set(GPIOA, GPIO7);
+		break;
+	case SENSOR_FRONT_RIGHT_ID:
+		gpio_set(GPIOA, GPIO4);
+		break;
+	default:
+		break;
+	}
+}
+
+/**
+ * @brief Set an specific emitter OFF.
+ *
+ * @param[in] emitter Emitter type.
+ */
+static void set_emitter_off(uint8_t emitter)
+{
+	switch (emitter) {
+	case SENSOR_SIDE_LEFT_ID:
+		gpio_clear(GPIOA, GPIO6);
+		break;
+	case SENSOR_SIDE_RIGHT_ID:
+		gpio_clear(GPIOA, GPIO5);
+		break;
+	case SENSOR_FRONT_LEFT_ID:
+		gpio_clear(GPIOA, GPIO7);
+		break;
+	case SENSOR_FRONT_RIGHT_ID:
+		gpio_clear(GPIOA, GPIO4);
+		break;
+	default:
+		break;
+	}
+}
+
+/**
+ * @brief State machine to manage the sensors activation and deactivation
+ * states and readings.
+ *
+ * In order to get accurate distance values, the phototransistor's output
+ * will be read with the infrared emitter sensors powered on and powered
+ * off. Besides, to avoid undesired interactions between different emitters and
+ * phototranistors, the reads will be done one by one.
+ *
+ * 1. Start phototransistor ADC reading (emitter is off)
+ * 2. Save phototransistor reading and turn emitter on
+ * 3. Start phototransistor ADC reading (emitter is on)
+ * 4. Save phototransistor reading and turn emitter off
+ */
+static void sm_emitter_adc(void)
+{
+	static uint8_t emitter_status = 1;
+	static uint8_t sensor_index = SENSOR_SIDE_LEFT_ID;
+
+	switch (emitter_status) {
+	case 1:
+		adc_start_conversion_injected(ADC1);
+		emitter_status = 2;
+		break;
+	case 2:
+		sensors_off[sensor_index] =
+		    adc_read_injected(ADC1, (sensor_index + 1));
+		set_emitter_on(sensor_index);
+		emitter_status = 3;
+		break;
+	case 3:
+		adc_start_conversion_injected(ADC1);
+		emitter_status = 4;
+		break;
+	case 4:
+		sensors_on[sensor_index] =
+		    adc_read_injected(ADC1, (sensor_index + 1));
+		set_emitter_off(sensor_index);
+		emitter_status = 1;
+		if (sensor_index == (NUM_SENSOR - 1))
+			sensor_index = 0;
+		else
+			sensor_index++;
+		break;
+	default:
+		break;
+	}
+}
+
+
+/**
  * @brief TIM10 Global interruption routine.
  *
  * - Manage the update event interruption flag.
@@ -138,7 +238,11 @@ const float log_conversion[LOG_CONVERSION_TABLE_SIZE] = {
  */
 
 void tim1_up_tim10_isr() {
-  // TODO
+  if (timer_get_flag(TIM10, TIM_SR_UIF)) {
+    // interrupt flag must be cleared by software
+    timer_clear_flag(TIM10, TIM_SR_UIF);
+    sm_emitter_adc();
+  }
 }
 
 

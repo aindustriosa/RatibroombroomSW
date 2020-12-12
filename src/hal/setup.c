@@ -475,12 +475,12 @@ static void setup_speaker(void)
 
 
 /**
- * @brief TIM1 setup.
+ * @brief TIM10 setup.
  *
- * The TIM1 generates an update event interruption that invokes the
- * function tim1_up_isr.
+ * The TIM10 generates an update event interruption that invokes the
+ * function tim1_up_tim10_isr (in detection.c)
  *
- * - Set TIM1 default values.
+ * - Set TIM10 default values.
  * - Configure the base time (no clock division ratio, no aligned mode,
  *   direction up).
  * - Set clock division, prescaler and period parameters to get an update
@@ -489,16 +489,16 @@ static void setup_speaker(void)
  *
  *   \f$frequency = \frac{timerclock}{(preescaler + 1)(period + 1)}\f$
  *
- * - Enable the TIM9
- * - Enable the interruption of type update event on the TIM1.
+ * - Enable the TIM10
+ * - Enable the interruption of type update event on the TIM10.
  *
- * @note The TIM1 is conected to the APB2 prescaler.
+ * @note The TIM10 is conected to the APB2 prescaler.
  *
  * @see Reference manual (RM0008) "Advanced-control timers"
  */
 static void setup_emitters(void)
 {
-  rcc_periph_reset_pulse(RST_TIM9);
+  rcc_periph_reset_pulse(RST_TIM10);
 
   timer_set_mode(TIM10, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
 		 TIM_CR1_DIR_UP);
@@ -532,8 +532,5 @@ void setup(void)
 	setup_adc2();
 	setup_mpu();
 	setup_systick();
-	// setup_emitters TODO
-	// TODO: adding nvic of timer1
-	// TODO: add detection (missing functions)
 }
 
