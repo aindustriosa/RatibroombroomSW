@@ -126,8 +126,11 @@ static void setup_clock(void)
  */
 static void setup_exceptions(void)
 {
-	nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
-	nvic_enable_irq(NVIC_USART1_IRQ);
+  nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2);
+  
+  nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
+  nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
+  nvic_enable_irq(NVIC_USART1_IRQ);
 }
 
 
