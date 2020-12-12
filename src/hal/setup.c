@@ -131,6 +131,8 @@ static void setup_exceptions(void)
 
   nvic_set_priority(NVIC_TIM1_UP_TIM10_IRQ, 0);
   nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2);
+  nvic_set_priority(NVIC_DMA2_STREAM7_IRQ, 2);
+  nvic_set_priority(NVIC_USART1_IRQ, 2);
   
   nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
   nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
