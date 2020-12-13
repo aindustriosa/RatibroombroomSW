@@ -25,10 +25,10 @@ static volatile bool received = false;
 /* Some helpers for the serial functions.
  * They are implemented at the end of this file.
  */
-void usart_enable_idle_line_interrupt(uint32_t usart);
-void usart_disable_idle_line_interrupt(uint32_t usart);
-bool usart_idle_line_detected(uint32_t usart);
-void usart_clear_idle_line_detected(uint32_t usart);
+inline void usart_enable_idle_line_interrupt(uint32_t usart);
+inline void usart_disable_idle_line_interrupt(uint32_t usart);
+inline bool usart_idle_line_detected(uint32_t usart);
+inline void usart_clear_idle_line_detected(uint32_t usart);
 
 
 /**
@@ -194,7 +194,7 @@ char *get_received_serial_buffer(void)
  *
  * @param[in] usart USART block register address base.
  */
-void usart_enable_idle_line_interrupt(uint32_t usart)
+inline void usart_enable_idle_line_interrupt(uint32_t usart)
 {
 	USART_CR1(usart) |= USART_CR1_IDLEIE;
 }
@@ -204,7 +204,7 @@ void usart_enable_idle_line_interrupt(uint32_t usart)
  *
  * @param[in] usart USART block register address base.
  */
-void usart_disable_idle_line_interrupt(uint32_t usart)
+inline void usart_disable_idle_line_interrupt(uint32_t usart)
 {
 	USART_CR1(usart) &= ~USART_CR1_IDLEIE;
 }
@@ -214,7 +214,7 @@ void usart_disable_idle_line_interrupt(uint32_t usart)
  *
  * @param[in] usart USART block register address base.
  */
-bool usart_idle_line_detected(uint32_t usart)
+inline bool usart_idle_line_detected(uint32_t usart)
 {
 	return ((USART_SR(usart) & USART_SR_IDLE) != 0);
 }
@@ -229,7 +229,7 @@ bool usart_idle_line_detected(uint32_t usart)
  *
  * @see Reference Manual (RM0008): Status register (USART_SR).
  */
-void usart_clear_idle_line_detected(uint32_t usart)
+inline void usart_clear_idle_line_detected(uint32_t usart)
 {
 	USART_SR(usart);
 	USART_DR(usart);
