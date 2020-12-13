@@ -9,8 +9,6 @@
 #include <libopencm3/cm3/sync.h>
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/dma.h>
-#include "myusart.h"
-//#include "mmlib/logging.h"   // hal should not depend on mmlib!!
 
 #define RECEIVE_BUFFER_SIZE 256   // Used by mmlib (command) // FIXME: move to bulebule specs?
 
