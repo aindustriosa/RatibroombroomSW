@@ -96,7 +96,7 @@
  *
  * @see Programming manual (PM0081) "Flash module organization"
  */
-#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x08000000))
+#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x08000000 + 0xE0000))
 
 void setup(void);
 void setup_spi_low_speed(void);   // Used by mmlib (mpu)
