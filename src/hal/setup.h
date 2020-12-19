@@ -84,20 +84,6 @@
 #define ADC_RESOLUTION 4096
 #define ADC_LSB (3.3 / ADC_RESOLUTION)
 
-/**
- * Flash module organization.
- *
- * The memory organization is:
- * 4 sectors of 16KB
- * 1 sector of 64KB
- * 7 sectors of 128 KB 
- *
- * The linker file was modified to reserve the first memory page for EEPROM.
- *
- * @see Programming manual (PM0081) "Flash module organization"
- */
-#define FLASH_EEPROM_ADDRESS_MAZE ((uint32_t)(0x08000000 + 0xE0000))
-
 void setup(void);
 void setup_spi_low_speed(void);   // Used by mmlib (mpu)
 void setup_spi_high_speed(void);  // Used by mmlib (mpu)
