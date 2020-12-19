@@ -6,7 +6,11 @@
 
 /** Flash results */
 #define RESULT_OK 0
+#define FLASH_WRONG_DATA_WRITTEN 0x80
 
+/** Flash sector used as eeprom **/
+#define FLASH_SECTOR 11
+#define FLASH_PROGRAM_SIZE 2  // 2 is 32 bit
 
 uint32_t eeprom_flash_page(uint32_t page_address, uint8_t *input_data,
 			   uint16_t num_bytes);  // Used by mmlib (solve)
