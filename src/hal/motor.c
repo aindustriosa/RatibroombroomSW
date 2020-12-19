@@ -1,5 +1,7 @@
 #include "motor.h"
 
+static volatile uint32_t saturated_left;
+static volatile uint32_t saturated_right;
 
 /**
  * @brief Set left motor power.
@@ -16,7 +18,24 @@
  */
 void power_left(int32_t power)
 {
-  // FIXME: mock
+	bool forward = true;
+
+	if (power < 0) {
+		power = -power;
+		forward = false;
+	}
+	if (power > MAX_PWM_PERIOD) {
+		power = MAX_PWM_PERIOD;
+		saturated_left += 1;
+	} else {
+		saturated_left = 0;
+	}
+	if (forward) {
+		timer_set_oc_value(TIM8, TIM_OC3, 0); // Allways 0
+	} else {
+		timer_set_oc_value(TIM8, TIM_OC3, MAX_PWM_PERIOD); // Allways 1		
+	}
+  timer_set_oc_value(TIM8, TIM_OC4, power); // PWM
 }
 
 /**
@@ -34,8 +53,24 @@ void power_left(int32_t power)
  */
 void power_right(int32_t power)
 {
-  // FIXME: mock
+	bool forward = true;
 
+	if (power < 0) {
+		power = -power;
+		forward = false;
+	}
+	if (power > MAX_PWM_PERIOD) {
+		power = MAX_PWM_PERIOD;
+		saturated_right += 1;
+	} else {
+		saturated_right = 0;
+	}
+	if (forward) {
+		timer_set_oc_value(TIM8, TIM_OC1, 0); // Allways 0
+	} else {
+		timer_set_oc_value(TIM8, TIM_OC1, MAX_PWM_PERIOD); // Allways 1
+	}
+	timer_set_oc_value(TIM8, TIM_OC2, power); // PWM
 }
 
 /**
@@ -43,16 +78,28 @@ void power_right(int32_t power)
  */
 void drive_break(void)
 {
-  // FIXME: mock
+  drive_brake();
 }
+
+
+/**
+ * @brief Brake both motors (short the motor winding).
+ */
+void drive_brake(void)
+{
+	timer_set_oc_value(TIM8, TIM_OC2, 0); // ENBL 0
+	timer_set_oc_value(TIM8, TIM_OC4, 0); // ENBL 0
+}
+
 
 /**
  * @brief Return the maximum consecutive motor driver saturated outputs.
  */
 uint32_t motor_driver_saturation(void)
 {
-  // FIXME mock
-  return 0;
+	if (saturated_right > saturated_left)
+		return saturated_right;
+	return saturated_left;
 }
   
 
@@ -62,6 +109,6 @@ uint32_t motor_driver_saturation(void)
  */
 void reset_motor_driver_saturation(void)
 {
-  // FIXME: mock
-
+	saturated_left = 0;
+	saturated_right = 0;
 }
