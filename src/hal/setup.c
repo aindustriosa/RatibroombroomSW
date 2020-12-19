@@ -96,12 +96,14 @@ static void setup_clock(void)
 	rcc_periph_clock_enable(RCC_SPI3);
 
 	/* Timers */
-	rcc_periph_clock_enable(RCC_TIM3);
-	rcc_periph_clock_enable(RCC_TIM4);
-	rcc_periph_clock_enable(RCC_TIM8);
-	rcc_periph_clock_enable(RCC_TIM11);
+	rcc_periph_clock_enable(RCC_TIM10); // emitter readings/interruption
+	rcc_periph_clock_enable(RCC_TIM3); // encoder
+	rcc_periph_clock_enable(RCC_TIM4); // encoder
+	rcc_periph_clock_enable(RCC_TIM8); // motor driver
+	rcc_periph_clock_enable(RCC_TIM11); //speaker
 
 	/* ADC */
+	rcc_periph_clock_enable(RCC_ADC1);
 	rcc_periph_clock_enable(RCC_ADC2);
 
 	/* DMA */
@@ -126,11 +128,17 @@ static void setup_clock(void)
  */
 static void setup_exceptions(void)
 {
+
+  nvic_set_priority(NVIC_TIM1_UP_TIM10_IRQ, 0);
   nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2);
+  nvic_set_priority(NVIC_DMA2_STREAM7_IRQ, 2);
+  nvic_set_priority(NVIC_USART1_IRQ, 2);
   
   nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
   nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
   nvic_enable_irq(NVIC_USART1_IRQ);
+  nvic_enable_irq(NVIC_TIM1_UP_TIM10_IRQ);
+
 }
 
 
@@ -150,6 +158,50 @@ static void setup_systick(void)
 	systick_set_frequency(SYSTICK_FREQUENCY_HZ, SYSCLK_FREQUENCY_HZ);
 	systick_counter_enable();
 }
+
+
+
+/**
+ * @brief Setup for ADC 1: Four injected channels on scan mode.
+ *
+ * - Initialize channel_sequence structure to map physical channels
+ *   versus software injected channels. The order to read the sensors is: left
+ *   side, right side, left front, right front.
+ * - Power off the ADC to be sure that does not run during configuration.
+ * - Enable scan mode with single conversion mode triggered by software.
+ * - Configure the alignment (right) and the sample time (13.5 cycles of ADC
+ *   clock).
+ * - Set injected sequence with `channel_sequence` structure.
+ * - Start the ADC.
+ *
+ * @note This ADC reads phototransistor sensors measurements.
+ *
+ * @see Reference manual (RM0090) "Analog-to-digital converter" and in
+ * particular "Scan mode" section.
+ *
+ * @see Pinout section from project official documentation
+ * (https://bulebule.readthedocs.io/)
+ */
+static void setup_adc1(void)
+{
+	uint8_t channel_sequence[4] = {ADC_CHANNEL12, ADC_CHANNEL11, ADC_CHANNEL13,
+				       ADC_CHANNEL10};
+
+	adc_power_off(ADC1);
+	adc_enable_scan_mode(ADC1);
+	adc_set_single_conversion_mode(ADC1);
+
+	// adc_enable_external_trigger_injected(ADC1, ADC_CR2_JEXTSEL_JSWSTART); //FIXME: remove
+	// adc_start_conversion_injected(ADC1);  // fixme: start conversion with this
+	adc_set_right_aligned(ADC1);
+	adc_set_sample_time_on_all_channels(ADC1, ADC_SMPR_SMP_15CYC);
+	adc_set_injected_sequence(
+	    ADC1, sizeof(channel_sequence) / sizeof(channel_sequence[0]),
+	    channel_sequence);
+	adc_power_on(ADC1);
+}
+
+
 
 
 /**
@@ -192,6 +244,10 @@ static void setup_adc2(void)
  */
 static void setup_gpio(void)
 {
+        /* Infrarred sensors */
+        gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE,
+			GPIO0 | GPIO1 | GPIO2 | GPIO3);
+  
 	/* Battery */
 	gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO4);
 
@@ -421,6 +477,47 @@ static void setup_speaker(void)
 
 
 /**
+ * @brief TIM10 setup.
+ *
+ * The TIM10 generates an update event interruption that invokes the
+ * function tim1_up_tim10_isr (in detection.c)
+ *
+ * - Set TIM10 default values.
+ * - Configure the base time (no clock division ratio, no aligned mode,
+ *   direction up).
+ * - Set clock division, prescaler and period parameters to get an update
+ *   event with a frequency of 16 KHz. 16 interruptions by ms, 4 sensors with
+ *   4 states.
+ *
+ *   \f$frequency = \frac{timerclock}{(preescaler + 1)(period + 1)}\f$
+ *
+ * - Enable the TIM10
+ * - Enable the interruption of type update event on the TIM10.
+ *
+ * @note The TIM10 is conected to the APB2 prescaler.
+ *
+ * @see Reference manual (RM0008) "Advanced-control timers"
+ */
+static void setup_emitters(void)
+{
+  rcc_periph_reset_pulse(RST_TIM10);
+
+  timer_set_mode(TIM10, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
+		 TIM_CR1_DIR_UP);
+  
+  timer_set_clock_division(TIM10, 0x00);
+  timer_set_prescaler(TIM10, (rcc_apb2_frequency / 160000 - 1));
+  timer_set_period(TIM10, 10 - 1);
+  timer_enable_counter(TIM10);
+  // Update interrupt enable
+  timer_enable_irq(TIM10, TIM_DIER_UIE);
+
+
+}
+
+
+
+/**
  * @brief Execute all setup functions.
  */
 void setup(void)
@@ -432,6 +529,8 @@ void setup(void)
 	setup_motor_driver();
 	setup_encoders();
 	setup_usart();
+	setup_emitters();
+	setup_adc1();
 	setup_adc2();
 	setup_mpu();
 	setup_systick();
