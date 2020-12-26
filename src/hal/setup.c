@@ -1,6 +1,15 @@
 #include "setup.h"
 
 
+/** Exception priorities uses only the upper 4 bits of the register
+
+That means the priorities should multiplied by this factor 
+(shifting 4 bits to the left)
+
+*/
+#define PRIORITY_FACTOR 16
+
+
 static void rcc_clock_setup_hsi_3v3(const struct rcc_clock_scale *clock)
 {
 	/* Enable internal high-speed oscillator (HSI). */
@@ -130,9 +139,10 @@ static void setup_exceptions(void)
 {
 
   nvic_set_priority(NVIC_TIM1_UP_TIM10_IRQ, 0);
-  nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2);
-  nvic_set_priority(NVIC_DMA2_STREAM7_IRQ, 2);
-  nvic_set_priority(NVIC_USART1_IRQ, 2);
+  nvic_set_priority(NVIC_SYSTICK_IRQ, 1 * PRIORITY_FACTOR);  // systick interruptions are enabled in main (original bulebule code)
+  nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2 * PRIORITY_FACTOR);
+  nvic_set_priority(NVIC_DMA2_STREAM7_IRQ, 2 * PRIORITY_FACTOR);
+  nvic_set_priority(NVIC_USART1_IRQ, 2 * PRIORITY_FACTOR);
   
   nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
   nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
@@ -514,7 +524,6 @@ static void setup_emitters(void)
 
 
 }
-
 
 
 /**
