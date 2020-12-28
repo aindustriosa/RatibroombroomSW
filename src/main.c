@@ -3,14 +3,13 @@
 #include "mmlib/speed.h"
 
 /**
- * @brief Empty main
+ * @brief Program entry point
  */
 int main(void)
 {
 
   setup();
 
-  // FIXME: kinematic configuration goes here
   kinematic_configuration(0.25, false);
   systick_interrupt_enable();
 
