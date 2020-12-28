@@ -93,6 +93,15 @@ void drive_brake(void)
 
 
 /**
+ * @brief Disable the motor driver (let both motors coast).
+ */
+void drive_off(void)
+{
+  drive_brake();  //FIXME: not sure what to do here
+
+}
+
+/**
  * @brief Return the maximum consecutive motor driver saturated outputs.
  */
 uint32_t motor_driver_saturation(void)
