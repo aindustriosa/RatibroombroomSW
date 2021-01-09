@@ -13,6 +13,7 @@
 #include "voltage.h"
 #include "leds.h"
 
+void wait(void);
 
 /**
  * @brief main application loop

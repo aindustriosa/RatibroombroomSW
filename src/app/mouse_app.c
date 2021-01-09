@@ -139,6 +139,16 @@ static void configure_and_move(void)
 		movement_phase(true);
 }
 
+
+/**
+ * @brief Basic wait function
+ */
+void wait(void)
+{
+  for (int i = 0; i < 10000000; ++i)
+	__asm__("nop");
+}
+
 /**
  * @brief main application loop
  *
@@ -146,16 +156,19 @@ static void configure_and_move(void)
 void loop(void)
 {
   while(1) {
-     switch (button_user_response()) {
-       case BUTTON_NONE:
-	 break;
-     default:
-       configure_and_move();
-       break;
+    //  switch (button_user_response()) {
+    //    case BUTTON_NONE:
+	//  break;
+    //  default:
+    //    configure_and_move();
+    //    break;
 
-     }
-     execute_command();
+    //  }
+    //  execute_command();
     
+	wait(); led_left_on(); led_right_off();
+	wait(); led_left_off(); led_right_on();
+
   }
     
   
