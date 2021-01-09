@@ -165,10 +165,13 @@ void loop(void)
 
     //  }
     //  execute_command();
-    
+
+	wait(); led_left_off(); led_right_off();
 	wait(); led_left_on(); led_right_off();
 	wait(); led_left_off(); led_right_on();
+	wait(); led_left_on(); led_right_on();	
 
+	LOG_INFO("Ratibroombroom");
   }
     
   
