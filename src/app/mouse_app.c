@@ -155,6 +155,7 @@ void wait(void)
  */
 void loop(void)
 {
+
   while(1) {
     //  switch (button_user_response()) {
     //    case BUTTON_NONE:
@@ -166,11 +167,11 @@ void loop(void)
     //  }
     //  execute_command();
 
-	wait(); led_left_off(); led_right_off();
-	wait(); led_left_on(); led_right_off();
-	wait(); led_left_off(); led_right_on();
-	wait(); led_left_on(); led_right_on();	
-
+	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
+	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
+	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
+	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
+	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
 	LOG_INFO("Ratibroombroom");
   }
     
