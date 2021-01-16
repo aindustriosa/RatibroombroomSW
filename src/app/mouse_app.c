@@ -166,13 +166,22 @@ void loop(void)
 
     //  }
     //  execute_command();
+	while(button_read_left()) {
+		wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
+		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
+		LOG_INFO("LEFT BUTTON");
+	}
+	while(button_read_right()) {
+		wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
+		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
+		LOG_INFO("RIGHT BUTTON");
+	}
 
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
-	LOG_INFO("Ratibroombroom");
+	wait(); log_sensors_raw();
   }
     
   
