@@ -13,7 +13,7 @@ bool button_read_user(void)
  */
 bool button_read_left(void)
 {
-  return (bool)(gpio_get(GPIOB, GPIO12));
+  return !(bool)(gpio_get(GPIOB, GPIO12));
 }
 
 /**
@@ -21,5 +21,5 @@ bool button_read_left(void)
  */
 bool button_read_right(void)
 {
-  return (bool)(gpio_get(GPIOC, GPIO13));
+  return !(bool)(gpio_get(GPIOC, GPIO13));
 }
