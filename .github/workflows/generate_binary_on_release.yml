@@ -1,0 +1,28 @@
+name: Generate and upload binary on release
+
+# Controls when the action will run (when a commit is tagged). 
+on:
+  push:
+    tags:
+      - '*'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile libopencm3
+      run: make libopencm3
+    - name: make
+      run: make clean ; make
+      # This will draft a new release & will attach the binaries produced by the above outputs.
+      # You still need to publish this release though after job ends.
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: ./src/main.elf
