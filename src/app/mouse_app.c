@@ -149,6 +149,8 @@ void wait(void)
 	__asm__("nop");
 }
 
+
+
 /**
  * @brief main application loop
  *
@@ -166,23 +168,29 @@ void loop(void)
 
     //  }
     //  execute_command();
+
+	wait(); speaker_play_beeps(2);
+
 	while(button_read_left()) {
-		wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
+		wait(); led_FL_on(); led_FR_on(); led_RL_off(); led_RR_off();
 		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
-		LOG_INFO("LEFT BUTTON");
+		power_left(256);
+		power_right(256);
+		log_encoder_data();
 	}
 	while(button_read_right()) {
-		wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
+		wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_on();
 		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
-		LOG_INFO("RIGHT BUTTON");
+		power_left(-256);
+		power_right(-256);
+		log_encoder_data();
 	}
 
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	wait(); log_battery_voltage();
-	wait(); speaker_play_beeps(2);
+	wait(); log_encoder_data();
   }
     
   
