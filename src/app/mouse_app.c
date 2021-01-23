@@ -154,7 +154,7 @@ void wait(void)
  */
 void log_encoders_counts(void)
 {
-	LOG_DATA("[%d, %d]", get_encoder_left_total_count(), get_encoder_right_total_count());
+	LOG_DATA("[%d, %d]", read_encoder_left(), read_encoder_right());
 }
 
 /**
@@ -192,6 +192,8 @@ void loop(void)
 		log_encoders_counts();
 	}
 
+	power_left(0);
+	power_right(0);
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
