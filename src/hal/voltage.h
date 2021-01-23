@@ -11,7 +11,7 @@
  *@return The battery voltage in volts.
  */
 float get_battery_voltage(void); //
-
+uint16_t get_battery_raw(void);
 /**
  * @brief Function to get motor driver input voltage.
  * 

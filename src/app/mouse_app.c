@@ -181,7 +181,8 @@ void loop(void)
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	wait(); log_sensors_raw();
+	wait(); log_battery_voltage();
+	wait(); speaker_play_beeps(2);
   }
     
   
