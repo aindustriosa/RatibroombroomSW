@@ -58,4 +58,6 @@ void serial_send(char *data, int size);
  */
 char *get_received_serial_buffer(void);
 
+void serial_receive(void);
+
 #endif /* __SERIAL_H */

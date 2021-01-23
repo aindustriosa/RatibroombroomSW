@@ -163,7 +163,7 @@ void log_encoders_counts(void)
  */
 void loop(void)
 {
-
+  
   while(1) {
     //  switch (button_user_response()) {
     //    case BUTTON_NONE:
@@ -175,30 +175,12 @@ void loop(void)
     //  }
     //  execute_command();
 
-	wait(); speaker_play_beeps(2);
-
-	while(button_read_left()) {
-		wait(); led_FL_on(); led_FR_on(); led_RL_off(); led_RR_off();
-		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
-		power_left(256);
-		power_right(256);
-		log_encoders_counts();
-	}
-	while(button_read_right()) {
-		wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_on();
-		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
-		power_left(-256);
-		power_right(-256);
-		log_encoders_counts();
-	}
-
-	power_left(0);
-	power_right(0);
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	wait(); log_encoders_counts();
+	LOG_DATA("%x", mpu_who_am_i());
+
   }
     
   
