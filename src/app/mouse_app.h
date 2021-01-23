@@ -10,9 +10,9 @@
 
 /* HAL imports */
 #include "setup.h"
-#include "voltage.h"
 #include "leds.h"
-#include "motor.h"
+#include "fan.h"
+#include "buttons.h"
 
 void wait(void);
 

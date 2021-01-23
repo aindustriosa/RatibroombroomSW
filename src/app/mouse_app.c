@@ -175,11 +175,25 @@ void loop(void)
     //  }
     //  execute_command();
 
+	while (button_read_left())
+	{
+		wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
+		wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();	
+		power_fan(512);
+	}
+
+	while (button_read_right())
+	{
+		wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
+		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
+		power_fan(1024);
+	}
+
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	LOG_DATA("%x", mpu_who_am_i());
+	power_fan(0);
 
   }
     
