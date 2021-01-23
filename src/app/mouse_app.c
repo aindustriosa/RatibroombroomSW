@@ -149,7 +149,13 @@ void wait(void)
 	__asm__("nop");
 }
 
-
+/**
+ * @brief Log encoder info
+ */
+void log_encoders_counts(void)
+{
+	LOG_DATA("[%d, %d]", get_encoder_left_total_count(), get_encoder_right_total_count());
+}
 
 /**
  * @brief main application loop
@@ -176,21 +182,21 @@ void loop(void)
 		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
 		power_left(256);
 		power_right(256);
-		log_encoder_data();
+		log_encoders_counts();
 	}
 	while(button_read_right()) {
 		wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_on();
 		wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_off();
 		power_left(-256);
 		power_right(-256);
-		log_encoder_data();
+		log_encoders_counts();
 	}
 
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	wait(); log_encoder_data();
+	wait(); log_encoders_counts();
   }
     
   
