@@ -164,6 +164,9 @@ void log_encoders_counts(void)
 void loop(void)
 {
   
+  uint8_t control = 0x8F;
+  uint8_t data = 0xFF;
+
   while(1) {
     //  switch (button_user_response()) {
     //    case BUTTON_NONE:
@@ -175,12 +178,14 @@ void loop(void)
     //  }
     //  execute_command();
 
+	
+
 	wait(); led_FL_on(); led_FR_off(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_on(); led_RL_off(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
-	LOG_DATA("%x", mpu_who_am_i());
-
+	data = mpu_who_am_i();
+	LOG_DATA("[%x,%x]", control, data);
   }
     
   
