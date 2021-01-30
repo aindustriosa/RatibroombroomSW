@@ -438,22 +438,22 @@ static void setup_spi(uint8_t speed_div)
 /**
  * @brief Setup SPI for gyroscope read, less than 20 MHz.
  *
- * The clock baudrate is 84 MHz / 8 = 10.5 MHz.
+ * The clock baudrate is 42 MHz / 4 = 10.5 MHz.
  */
 void setup_spi_high_speed(void)
 {
-  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_8);
+  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_4);
 }
 
 
 /**
  * @brief Setup SPI for gyroscope Write, less than 1 MHz.
  *
- * The clock baudrate is 84 MHz / 128 = 0.65625 MHz.
+ * The clock baudrate is 42 MHz / 64 = 0.65625 MHz.
  */
 void setup_spi_low_speed(void)
 {
-  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_128);
+  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_64);
 }
 
 
