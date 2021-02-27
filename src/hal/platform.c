@@ -42,11 +42,14 @@ uint8_t mpu_read_register(uint8_t address)
   uint8_t reading;
   
   gpio_clear(GPIOA, GPIO15);
-  spi_send(SPI3, (MPU_READ | address));
+  spi_send(SPI3, ((MPU_READ | address) & 0x00FF));
   spi_read(SPI3);
+  //spi_send(SPI3, 0x00);
+  //spi_read(SPI3);
   spi_send(SPI3, 0x00);
   reading = spi_read(SPI3);
   gpio_set(GPIOA, GPIO15);
+  sleep_us(4);
 
   return reading;
 }
@@ -66,4 +69,5 @@ void mpu_write_register(uint8_t address, uint8_t value)
   spi_send(SPI3, value);
   spi_read(SPI3);
   gpio_set(GPIOA, GPIO15);
+  sleep_us(4);
 }

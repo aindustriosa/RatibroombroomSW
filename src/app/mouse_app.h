@@ -7,6 +7,7 @@
 #include "mmlib/calibration.h"
 #include "mmlib/solve.h"
 #include "mmlib/command.h"
+#include "mmlib/mpu.h"
 
 /* HAL imports */
 #include "setup.h"

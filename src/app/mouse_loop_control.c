@@ -8,7 +8,7 @@ void mouse_loop_control(void)
 {
 	clock_tick();
 	update_distance_readings();
-	update_gyro_readings();
+	//update_gyro_readings();
 	update_encoder_readings();
 	motor_control();
 	log_data();

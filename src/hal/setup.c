@@ -298,6 +298,9 @@ static void setup_gpio(void)
 	gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO15);
 	gpio_set(GPIOA, GPIO15);
 
+	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, GPIO14);
+	gpio_clear(GPIOB, GPIO14);
+
 	gpio_mode_setup(GPIOC, GPIO_MODE_AF, GPIO_PUPD_PULLDOWN,
 			GPIO10 | GPIO11 | GPIO12);
 	gpio_set_af(GPIOC, GPIO_AF6, GPIO10 | GPIO11 | GPIO12);

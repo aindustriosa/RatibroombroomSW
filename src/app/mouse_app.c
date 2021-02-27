@@ -165,8 +165,10 @@ void loop(void)
 {
   
   uint8_t control = 0x8F;
-  uint8_t data = 0xFF;
+  uint8_t data = 0x22;
+  uint8_t data2 = 0x11;
 
+  uint8_t reg = 0;
   while(1) {
     //  switch (button_user_response()) {
     //    case BUTTON_NONE:
@@ -185,7 +187,11 @@ void loop(void)
 	wait(); led_FL_off(); led_FR_off(); led_RL_on(); led_RR_off();
 	wait(); led_FL_off(); led_FR_off(); led_RL_off(); led_RR_on();
 	data = mpu_who_am_i();
-	LOG_DATA("[%x,%x]", control, data);
+	data2 = mpu_read_register(reg++);
+	if (reg == 128) {
+		reg = 0;
+	}
+	LOG_DATA("[%x,%x,%x]", control, data, data2);
   }
     
   
