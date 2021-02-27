@@ -50,6 +50,11 @@ bool serial_acquire_transfer_lock(void);
 void serial_send(char *data, int size);
 
 /**
+ * @brief Setup serial to receive data
+ */
+void serial_receive(void);
+
+/**
  * @brief Returns the serial buffer address where the incoming bytes are stored.
  * 
  *  Used by mmlib (command)

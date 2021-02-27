@@ -149,7 +149,7 @@ void led_right_on(void)
  */
 void led_left_off(void)
 {
-	led_RR_off();
+	led_RL_off();
 }
 
 /**

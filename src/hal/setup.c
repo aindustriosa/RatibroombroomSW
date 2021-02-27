@@ -105,10 +105,11 @@ static void setup_clock(void)
 	rcc_periph_clock_enable(RCC_SPI3);
 
 	/* Timers */
-	rcc_periph_clock_enable(RCC_TIM10); // emitter readings/interruption
+	rcc_periph_clock_enable(RCC_TIM9); // emitter readings/interruption
 	rcc_periph_clock_enable(RCC_TIM3); // encoder
 	rcc_periph_clock_enable(RCC_TIM4); // encoder
 	rcc_periph_clock_enable(RCC_TIM8); // motor driver
+	rcc_periph_clock_enable(RCC_TIM10); // fan
 	rcc_periph_clock_enable(RCC_TIM11); //speaker
 
 	/* ADC */
@@ -138,7 +139,7 @@ static void setup_clock(void)
 static void setup_exceptions(void)
 {
 
-  nvic_set_priority(NVIC_TIM1_UP_TIM10_IRQ, 0);
+  nvic_set_priority(NVIC_TIM1_BRK_TIM9_IRQ, 0);
   nvic_set_priority(NVIC_SYSTICK_IRQ, 1 * PRIORITY_FACTOR);  // systick interruptions are enabled in main (original bulebule code)
   nvic_set_priority(NVIC_DMA2_STREAM5_IRQ, 2 * PRIORITY_FACTOR);
   nvic_set_priority(NVIC_DMA2_STREAM7_IRQ, 2 * PRIORITY_FACTOR);
@@ -147,7 +148,7 @@ static void setup_exceptions(void)
   nvic_enable_irq(NVIC_DMA2_STREAM7_IRQ);
   nvic_enable_irq(NVIC_DMA2_STREAM5_IRQ);
   nvic_enable_irq(NVIC_USART1_IRQ);
-  nvic_enable_irq(NVIC_TIM1_UP_TIM10_IRQ);
+  nvic_enable_irq(NVIC_TIM1_BRK_TIM9_IRQ);
 
 }
 
@@ -275,6 +276,10 @@ static void setup_gpio(void)
 	gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9);
 	gpio_set_af(GPIOB, GPIO_AF3, GPIO9);
 
+	/* Fan driver */
+	gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO8);
+	gpio_set_af(GPIOB, GPIO_AF3, GPIO8);
+
 	/* Motor driver */
 	gpio_mode_setup(GPIOC, GPIO_MODE_AF, GPIO_PUPD_NONE,
 			GPIO6 | GPIO7 | GPIO8 | GPIO9);
@@ -291,11 +296,15 @@ static void setup_gpio(void)
 	gpio_set(GPIOA, GPIO10);
 
 	/* Buttons */
-	gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO13);
+	gpio_mode_setup(GPIOB, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPIO12);
+	gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPIO13);
 
 	/* MPU */
 	gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO15);
 	gpio_set(GPIOA, GPIO15);
+
+	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, GPIO14);
+	gpio_clear(GPIOB, GPIO14);
 
 	gpio_mode_setup(GPIOC, GPIO_MODE_AF, GPIO_PUPD_PULLDOWN,
 			GPIO10 | GPIO11 | GPIO12);
@@ -316,6 +325,8 @@ static void setup_usart(void)
 	usart_set_mode(USART1, USART_MODE_TX_RX);
 
 	usart_enable(USART1);
+
+	serial_receive();
 }
 
 
@@ -365,6 +376,39 @@ static void setup_motor_driver(void)
 	timer_enable_break_main_output(TIM8);
 
 	timer_enable_counter(TIM8);
+}
+
+/**
+ * @brief Setup PWM for the suction fan.
+ *
+ * TIM10 is used to generate PWM signal:
+ *
+ * - Edge-aligned, up-counting timer.
+ * - Prescale to increment timer counter at 24 MHz.
+ * - Set PWM frequency to 24 kHz.
+ * - Configure channels 1 as output GPIOs.
+ * - Set output compare mode to PWM1 (output is active when the counter is
+ *   less than the compare register contents and inactive otherwise.
+ * - Reset output compare value (set it to 0).
+ * - Enable channels 1 outputs.
+ * - Enable timer counter.
+ */
+static void setup_fan_driver(void)
+{
+	timer_set_mode(TIM10, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
+		       TIM_CR1_DIR_UP);
+
+	timer_set_prescaler(TIM10, (rcc_apb2_frequency / 24000000 - 1));
+	timer_set_repetition_counter(TIM10, 0);
+	timer_enable_preload(TIM10);
+	timer_continuous_mode(TIM10);
+	timer_set_period(TIM10, DRIVER_PWM_PERIOD);
+
+	timer_set_oc_mode(TIM10, TIM_OC1, TIM_OCM_PWM1);
+	timer_set_oc_value(TIM10, TIM_OC1, 0);
+	timer_enable_oc_output(TIM10, TIM_OC1);
+
+	timer_enable_counter(TIM10);
 }
 
 /**
@@ -437,22 +481,22 @@ static void setup_spi(uint8_t speed_div)
 /**
  * @brief Setup SPI for gyroscope read, less than 20 MHz.
  *
- * The clock baudrate is 84 MHz / 8 = 10.5 MHz.
+ * The clock baudrate is 42 MHz / 4 = 10.5 MHz.
  */
 void setup_spi_high_speed(void)
 {
-  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_8);
+  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_4);
 }
 
 
 /**
  * @brief Setup SPI for gyroscope Write, less than 1 MHz.
  *
- * The clock baudrate is 84 MHz / 128 = 0.65625 MHz.
+ * The clock baudrate is 42 MHz / 64 = 0.65625 MHz.
  */
 void setup_spi_low_speed(void)
 {
-  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_128);
+  setup_spi(SPI_CR1_BAUDRATE_FPCLK_DIV_64);
 }
 
 
@@ -487,12 +531,12 @@ static void setup_speaker(void)
 
 
 /**
- * @brief TIM10 setup.
+ * @brief TIM9 setup.
  *
- * The TIM10 generates an update event interruption that invokes the
- * function tim1_up_tim10_isr (in detection.c)
+ * The TIM9 generates an update event interruption that invokes the
+ * function tim1_brk_tim9_isr (in detection.c)
  *
- * - Set TIM10 default values.
+ * - Set TIM9 default values.
  * - Configure the base time (no clock division ratio, no aligned mode,
  *   direction up).
  * - Set clock division, prescaler and period parameters to get an update
@@ -501,26 +545,26 @@ static void setup_speaker(void)
  *
  *   \f$frequency = \frac{timerclock}{(preescaler + 1)(period + 1)}\f$
  *
- * - Enable the TIM10
- * - Enable the interruption of type update event on the TIM10.
+ * - Enable the TIM9
+ * - Enable the interruption of type update event on the TIM9.
  *
- * @note The TIM10 is conected to the APB2 prescaler.
+ * @note The TIM9 is conected to the APB2 prescaler.
  *
  * @see Reference manual (RM0008) "Advanced-control timers"
  */
 static void setup_emitters(void)
 {
-  rcc_periph_reset_pulse(RST_TIM10);
+  rcc_periph_reset_pulse(RST_TIM9);
 
-  timer_set_mode(TIM10, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
+  timer_set_mode(TIM9, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE,
 		 TIM_CR1_DIR_UP);
   
-  timer_set_clock_division(TIM10, 0x00);
-  timer_set_prescaler(TIM10, (rcc_apb2_frequency / 160000 - 1));
-  timer_set_period(TIM10, 10 - 1);
-  timer_enable_counter(TIM10);
+  timer_set_clock_division(TIM9, 0x00);
+  timer_set_prescaler(TIM9, (rcc_apb2_frequency / 160000 - 1));
+  timer_set_period(TIM9, 10 - 1);
+  timer_enable_counter(TIM9);
   // Update interrupt enable
-  timer_enable_irq(TIM10, TIM_DIER_UIE);
+  timer_enable_irq(TIM9, TIM_DIER_UIE);
 
 
 }
@@ -535,6 +579,7 @@ void setup(void)
 	setup_exceptions();
 	setup_gpio();
 	setup_speaker();
+	setup_fan_driver();
 	setup_motor_driver();
 	setup_encoders();
 	setup_usart();
