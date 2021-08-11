@@ -15,7 +15,7 @@
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/stm32/usart.h>
 
-#include "mmlib/mpu.h"
+#include "mpu.h"
 
 /** Universal constants */
 #define MICROMETERS_PER_METER 1000000  // Used by mmlib

@@ -67,3 +67,34 @@ void mpu_write_register(uint8_t address, uint8_t value)
   spi_read(SPI3);
   gpio_set(GPIOA, GPIO15);
 }
+
+
+/**
+ * @brief Sleep for a number of microseconds.
+ *
+ * @param[in] us Sleep period, in microseconds.
+ */
+void sleep_us(uint32_t us)
+{
+	uint32_t initial_cycles = read_cycle_counter();
+	uint32_t sleep_cycles = (uint32_t)(
+	    SYSCLK_FREQUENCY_HZ * ((float)us / (float)MICROSECONDS_PER_SECOND));
+
+	while (read_cycle_counter() - initial_cycles <= sleep_cycles)
+		;
+}
+
+/**
+ * @brief Sleep for a number of microseconds since `cycle_counter`.
+ *
+ * @param[in] cycle_counter Cycle counter value used as starting point.
+ * @param[in] us Sleep period, in microseconds.
+ */
+void sleep_us_after(uint32_t cycle_counter, uint32_t us)
+{
+	uint32_t sleep_cycles = (uint32_t)(
+	    SYSCLK_FREQUENCY_HZ * ((float)us / (float)MICROSECONDS_PER_SECOND));
+
+	while (read_cycle_counter() - cycle_counter <= sleep_cycles)
+		;
+}

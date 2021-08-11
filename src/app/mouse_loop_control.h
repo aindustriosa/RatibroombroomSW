@@ -3,7 +3,7 @@
 
 #include "mmlib/clock.h"
 #include "mmlib/walls.h"
-#include "mmlib/mpu.h"
+#include "mpu.h"
 #include "mmlib/encoder.h"
 #include "mmlib/control.h"
 #include "mmlib/logging.h"
