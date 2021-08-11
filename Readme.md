@@ -17,3 +17,7 @@ This project is also inspired by the following projects:
 
 * Bule bule micromouse: https://bulebule.readthedocs.io/en/latest/ from Bulebots and its continuation, Meiga (https://github.com/Bulebots/meiga). 
 
+# MMLIB integration documentation
+
+Check this document for integration of MMLIB in your own projects [mmlibdocs](MMLib.md)
+
