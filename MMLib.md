@@ -89,4 +89,4 @@ Setup is also imported by other files in mmlib in order to get some var types. T
 ## VOLTAGE (voltage.h)
 
 * `float get_battery_voltage(void)`: get battery voltage, used to check battery levels. Used by *mmlib* (logging)
-* `float get_motor_driver_input_voltage(void)`: Function to get motor driver input voltage. Used by *mmlib* (control)
+* `float get_motor_driver_input_voltage(void)`: Function to get motor driver input voltage. This is used to translate a given voltage to PWM duty. Useful to compensate for variations in the voltage when directly connected to a battery. Used by *mmlib* (control)
