@@ -5,7 +5,7 @@ This document describes all the mmlib dependencies that the system must implemen
 
 # Dependencies
 
-This section describes the files that your system must implement with the functions and variables that must be in there.
+This section describes the files that your system must implement with the functions, defines and variables that must be in there.
 
 ## MPU (mpu.h)
 
@@ -21,6 +21,8 @@ This file must include the following variables and functions:
 * `MICROMETERS_PER_METER`: number of micrometer in one meter (10^6). Used by *mmlib* (in encoder, move and speed)
 * `PI`: hte pi number 3.1415 . Used by *mmlib* (calibration, move and speed)
 * `MAX_MOTOR_DRIVER_SATURATION_PERIOD`: TBD. Used by *mmlib* (control)
+* `SYSTICK_FREQUENCY_HZ`: Freq in Hz of your cron interruptions (e.g. systick if you are using stm32: if it is set to 1KHZ this var will be 1000). Used by *mmlib* (control, clock, encoder and move)
+* `DRIVER_PWM_PERIOD`: maximum value of PWM (e.g. 1024)
 
 
 Setup is also imported by other files in mmlib in order to get some var types. This file is imported in calibration, clock, control, encoder, move, solve and speed.
