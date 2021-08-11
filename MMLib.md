@@ -5,7 +5,7 @@ This document describes all the mmlib dependencies that the system must implemen
 
 # Dependencies
 
-This system describes the files that your system must implement with the functions and variables that must be in there.
+This section describes the files that your system must implement with the functions and variables that must be in there.
 
 ## MPU (mpu.h)
 
@@ -27,13 +27,13 @@ Setup is also imported by other files in mmlib in order to get some var types. T
 
 ## BUTTONS (buttons.h)
 
-* `bool button_read_user(void)` : A button used by mmlib to configure the run
+* `bool button_read_user(void)` : A button used by mmlib to configure the run. Used by *mmlib* (hmi)
 
 ## CONFIG (config.h)
 
 * `void set_control_constants(struct control_constants value)`: TBD. Used by *mmlib* (command)
-* `void set_micrometers_per_count(float value)`: TBD. Used by *mmlib* (control)
-* `float get_micrometers_per_count(void)`: TBD. Used by *mmlib* (logging)
+* `void set_micrometers_per_count(float value)`: Set the micrometers per each tick count of the encoder. Used by *mmlib* (control)
+* `float get_micrometers_per_count(void)`: Micrometers per each tick count of the encoder. Used by *mmlib* (logging)
 
 ## DETECTION (detection.h)
 
@@ -82,8 +82,8 @@ Setup is also imported by other files in mmlib in order to get some var types. T
 
 ## SPEAKER (speaker.h)
 
-* `void speaker_on(float hz)`: TBD. Used by *mmlib* (music)
-* `void speaker_off(void)`: TBD. Used by *mmlib* (music)
+* `void speaker_on(float hz)`:  Turn on the speaker to play at the selected frequency. Used by *mmlib* (music)
+* `void speaker_off(void)`: Turn off the speaker. Used by *mmlib* (music)
 
 
 ## VOLTAGE (voltage.h)
