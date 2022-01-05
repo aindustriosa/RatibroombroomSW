@@ -140,23 +140,245 @@ static void configure_and_move(void)
 }
 
 /**
+ * @brief Log encoder info
+ */
+void log_encoders_counts(void)
+{
+	LOG_DATA("[%d, %d]", get_encoder_left_total_count(), get_encoder_right_total_count());
+}
+
+/**
  * @brief main application loop
  *
  */
 void loop(void)
 {
-  while(1) {
-     switch (button_user_response()) {
-       case BUTTON_NONE:
-	 break;
-     default:
-       configure_and_move();
-       break;
+//   while(1) {
+//      switch (button_user_response()) {
+//        case BUTTON_NONE:
+// 	 break;
+//      default:
+//        configure_and_move();
+//        break;
 
-     }
-     execute_command();
+//      }
+//      execute_command();
     
-  }
-    
-  
+//   }
+
+	char state = 0;
+	bool forward = false;
+	bool backward = false;
+	bool forward_motors = false;
+	bool backward_motors = false;
+	bool stop_motors_1 = false;
+	bool stop_motors_2 = false;
+	uint32_t last_clock_ticks_led = 0;
+	uint32_t last_clock_ticks_action = 0;
+
+	leds_binary(0xFF);
+	LOG_INFO("Ratibroombroom Test Firmware");
+	speaker_play_beeps(5);
+	leds_binary(0x00);
+
+	while(1) {
+
+		forward = false;
+		backward = false;
+
+		if ((get_clock_ticks() - last_clock_ticks_led) > 500) {
+			led_FL_toggle();
+			last_clock_ticks_led = get_clock_ticks();
+		}
+
+		
+		if (state == 0) { // Battery
+			if ((get_clock_ticks() - last_clock_ticks_action) > 1000) {
+				log_battery_voltage();
+				// Must change
+				// LOG_INFO("%f,%d", get_battery_voltage(), get_battery_raw());
+				// in logging.c from mmlib to obtain more data
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 1;
+				forward = true;
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 5;
+				backward = true;
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+		} else if (state == 1) { // Sensors
+			if ((get_clock_ticks() - last_clock_ticks_action) > 500) {
+				log_sensors_raw();
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 2;
+				forward = true;
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 0;
+				backward = true;
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+		} else if (state == 2) { // Motors
+			if ((get_clock_ticks() - last_clock_ticks_action) < 3000) {
+				if (!forward_motors) {
+					LOG_INFO("Motors Forward");
+					forward_motors = true;
+				}
+				power_left(1000);
+				power_right(1000);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 4000) {
+				if (!stop_motors_1) {
+					LOG_INFO("Motors Stop");
+					stop_motors_1 = true;					
+				}
+				power_left(0);
+				power_right(0);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 7000) {
+				if (!backward_motors) {
+					LOG_INFO("Motors Backward");
+					backward_motors = true;
+				}
+				power_left(-1000);
+				power_right(-1000);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 8000) {
+				if (!stop_motors_2) {
+					LOG_INFO("Motors Stop");
+					stop_motors_2 = true;					
+				}
+				power_left(0);
+				power_right(0);
+			} else {
+				LOG_INFO("Motors Test");
+				forward_motors = false;
+				backward_motors = false;
+				stop_motors_1 = false;
+				stop_motors_2 = false;
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 3;
+				forward = true;
+				forward_motors = false;
+				backward_motors = false;
+				stop_motors_1 = false;
+				stop_motors_2 = false;
+				power_left(0);
+				power_right(0);
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 1;
+				backward = true;
+				forward_motors = false;
+				backward_motors = false;
+				stop_motors_1 = false;
+				stop_motors_2 = false;
+				power_left(0);
+				power_right(0);
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+		} else if (state == 3) { // Encoders
+			if ((get_clock_ticks() - last_clock_ticks_action) > 200) {
+				log_encoders_counts();
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 4;
+				forward = true;
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 2;
+				backward = true;
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+		} else if (state == 4) { // Fan
+			if ((get_clock_ticks() - last_clock_ticks_action) < 3000) {
+				power_fan(256);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 4000) {
+				power_fan(0);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 7000) {
+				power_fan(1024);
+			} else if ((get_clock_ticks() - last_clock_ticks_action) < 8000) {
+				power_fan(0);
+			} else {
+				LOG_INFO("Fan Test");
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 5;
+				forward = true;
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 3;
+				backward = true;
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+
+		} else if (state == 5) {
+			if ((get_clock_ticks() - last_clock_ticks_action) > 1000) {
+				LOG_DATA("[%x]", mpu_who_am_i());
+				last_clock_ticks_action = get_clock_ticks();
+			}
+			while(button_read_right()) {
+				state = 0;
+				forward = true;
+			}
+			if (forward) {
+				speaker_play_beeps(1);
+				continue;
+			}
+			while(button_read_left()) {
+				state = 4;
+				backward = true;
+			}
+			if (backward) {
+				speaker_play_beeps(2);
+				continue;
+			}
+
+		} else {
+			leds_binary(0xFF);
+			speaker_play_beeps(1);
+			leds_binary(0x00);
+		}
+	} 
 }

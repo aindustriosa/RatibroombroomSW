@@ -1,5 +1,5 @@
 #include "setup.h"
-#include "mouse_app.h"
+#include "app/mouse_app.h"
 #include "mmlib/speed.h"
 
 /**

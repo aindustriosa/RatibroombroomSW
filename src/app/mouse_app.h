@@ -12,6 +12,7 @@
 #include "setup.h"
 #include "voltage.h"
 #include "leds.h"
+#include "fan.h"
 
 
 /**
