@@ -11,10 +11,14 @@
  * and put it here. Remember not to choose input voltages very low or high,
  * as you could burn the board, use values from 6.4 to 8.1 Volts
 */
-#define DIVIDER_VOLTS_PER_BIT (3.3 / 4096) // Max input volts at ADC divided by the ADC resolution 
+#define DIVIDER_VOLTS_PER_BIT (3.97 / 1868) // Measured values of vbatt and adc value
+// TODO: Change to Max input volts at ADC divided by the ADC resolution 
 
 /** Motor driver input voltage */
 #define MOTOR_DRIVER_INPUT_VOLTAGE_WHEN_REGULATED 5.
+
+/** Store battery adc raw value */
+static volatile uint16_t battery_raw = 0; 
 
 /**
  * @brief Function to get battery voltage.
@@ -45,9 +49,19 @@ float get_battery_voltage(void)
 	while (!adc_eoc(BATTERY_ADC))
 		;
 	battery_bits = adc_read_regular(BATTERY_ADC);
+	battery_raw = battery_bits;
 	return battery_bits * DIVIDER_VOLTS_PER_BIT;
 }
 
+/**
+ * @brief Funtion to get raw adc battery value
+ * 
+ * @return The adc raw value
+ */
+uint16_t get_battery_raw(void)
+{
+	return battery_raw;
+}
 
 /**
  * @brief Function to get motor driver input voltage.

@@ -85,7 +85,7 @@ void serial_send(char *data, int size)
  *
  * An interruption is generated when the transfer is complete.
  */
-static void serial_receive(void)
+void serial_receive(void)
 {
   dma_stream_reset(DMA2, DMA_STREAM5);
   dma_enable_memory_increment_mode(DMA2, DMA_STREAM5);
@@ -93,8 +93,6 @@ static void serial_receive(void)
   dma_set_memory_size(DMA2, DMA_STREAM5, DMA_SxCR_MSIZE_8BIT);
   dma_set_priority(DMA2, DMA_STREAM5, DMA_SxCR_PL_VERY_HIGH);
   dma_set_transfer_mode(DMA2, DMA_STREAM5, DMA_SxCR_DIR_PERIPHERAL_TO_MEM);
-  
-  dma_set_peripheral_address(DMA2, DMA_STREAM5, (uint32_t)&USART3_DR);
   
   dma_set_peripheral_address(DMA2, DMA_STREAM5, (uint32_t)&USART1_DR);
   dma_set_memory_address(DMA2, DMA_STREAM5, (uint32_t)receive_buffer);
