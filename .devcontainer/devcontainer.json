@@ -3,7 +3,8 @@
 
 	"context": "..",
 
-	"image": "pcounhago/mighty-sdk:9.2020q2",
+	// "image": "pcounhago/mighty-sdk:9.2020q2",
+	"dockerFile": "Dockerfile",
 	"remoteUser": "mightyteam",
 	"updateRemoteUserUID": false,
 
