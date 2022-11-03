@@ -23,7 +23,22 @@ make
 
 ### Quickstep
 
-TODO
+#### Using the pre-built gdb scripts
+
+Execute the command:
+
+```
+make flash_black_magic_ttyACM0
+```
+
+If the blackmagic is in the tty/ACM0 device or 
+
+```
+make flash_black_magic_ttyACM3
+```
+
+If the blackmagic is in the tty/ACM3 device
+
 
 ### Step-by-step
 
@@ -75,8 +90,16 @@ No. Att Driver
  1      STM32F40x M4
 
 ```
+
+6) Attach to the device
+
+```
+attach 1
+```
+
  
-6) Finally flash the main.elf
+ 
+7) Finally flash the main.elf
 
 
 ```
@@ -86,6 +109,13 @@ Loading section .ARM.exidx, size 0x8 lma 0x8006c4c
 Loading section .data, size 0x690 lma 0x8006c54
 Start address 0x8004a24, load size 29412
 Transfer rate: 32 KB/sec, 919 bytes/write. 
+```
+
+8) Optional: Detach to the device and quit
+
+```
+detach
+quit
 ```
 
 # References
