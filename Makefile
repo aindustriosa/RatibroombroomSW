@@ -19,6 +19,14 @@ src:  ## (default) Compiles the micromouse code
 flash:  ## Flashes the robot using openOCD
 	${RUN} make -C src/ flash
 
+.PHONY: flash_black_magic_ttyACM0
+flash_black_magic_ttyACM0:  ## Flashes the robot using GDB and the Black Magic board, the device is expected at ttyACM0
+	${RUN} arm-none-eabi-gdb -x ./scripts/flash_ttyACM0.gdb
+
+.PHONY: flash_black_magic_ttyACM3
+flash_black_magic_ttyACM3:  ## Flashes the robot using GDB and the Black Magic board, the device is expected at ttyACM3
+	${RUN} arm-none-eabi-gdb -x ./scripts/flash_ttyACM3.gdb
+
 .PHONY: libopencm3
 libopencm3:  ## Downloads and compiles libopencm3. Only needed once after repository clone.
 	${RUN} scripts/setup_project.sh
