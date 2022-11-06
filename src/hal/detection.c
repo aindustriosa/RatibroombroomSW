@@ -231,16 +231,16 @@ static void sm_emitter_adc(void)
 
 
 /**
- * @brief TIM10 Global interruption routine.
+ * @brief TIM9 Global interruption routine.
  *
  * - Manage the update event interruption flag.
  * - Trigger state machine to manage sensors.
  */
 
-void tim1_up_tim10_isr() {
-  if (timer_get_flag(TIM10, TIM_SR_UIF)) {
+void tim1_brk_tim9_isr() {
+  if (timer_get_flag(TIM9, TIM_SR_UIF)) {
     // interrupt flag must be cleared by software
-    timer_clear_flag(TIM10, TIM_SR_UIF);
+    timer_clear_flag(TIM9, TIM_SR_UIF);
     sm_emitter_adc();
   }
 }

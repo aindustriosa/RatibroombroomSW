@@ -16,6 +16,7 @@
 #include <libopencm3/stm32/usart.h>
 
 #include "mpu.h"
+#include "hal/serial.h"
 
 /** Universal constants */
 #define MICROMETERS_PER_METER 1000000  // Used by mmlib

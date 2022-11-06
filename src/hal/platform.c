@@ -48,6 +48,8 @@ uint8_t mpu_read_register(uint8_t address)
   reading = spi_read(SPI3);
   gpio_set(GPIOA, GPIO15);
 
+  sleep_us(4); // FIX: spi issue hack
+
   return reading;
 }
 
@@ -66,6 +68,8 @@ void mpu_write_register(uint8_t address, uint8_t value)
   spi_send(SPI3, value);
   spi_read(SPI3);
   gpio_set(GPIOA, GPIO15);
+
+  sleep_us(4); // FIX: spi issue hack
 }
 
 

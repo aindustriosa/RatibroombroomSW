@@ -3,19 +3,20 @@
 
 	"context": "..",
 
-	"image": "pcounhago/mighty-sdk:9.2020q2",
+	// "image": "pcounhago/mighty-sdk:9.2020q2",
+	"dockerFile": "Dockerfile",
 	"remoteUser": "mightyteam",
 	"updateRemoteUserUID": false,
 
 	"settings": { 
-		"terminal.integrated.shell.linux": null
+		"terminal.integrated.defaultProfile.linux": "bash"
 	},
 
 	"extensions": [ 
 		"ms-vscode.cpptools"
 	],
 
-	"runArgs": ["--name", "mighty-sdk"],
+	"runArgs": ["--name", "mighty-sdk"]
 
 	// "forwardPorts": [],
 }
