@@ -126,3 +126,4 @@ This project is also inspired by the following projects:
 
 * Bule bule micromouse: https://bulebule.readthedocs.io/en/latest/ from Bulebots and its continuation, Meiga (https://github.com/Bulebots/meiga). 
 
+<b>Proxecto patrocinado por Xunta de Galicia e Amtega Axencia para a Modernización Tecnolóxica</b>
